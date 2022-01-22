@@ -1,3 +1,10 @@
+require 'calculator'
+require 'person'
+
+# RSpec.describe 'Description' do
+#    another way to use rspec
+# end
+
 describe 'Matchers' do
     context 'Equals matchers' do
         it '#equal - test if it is the same object' do
@@ -129,6 +136,26 @@ describe 'Matchers' do
             expect(5).to respond_to(:times)
             expect(5).to respond_to(:to_s)
             expect('ruby').to respond_to(:size)
+        end
+    end
+
+    context 'Classes attibutes matchers' do
+        it 'have_attributes' do
+            p = Person.new
+            expect(p).to have_attributes(name: nil)
+
+            p = Person.new('Guilherme', 31)
+            expect(p).to have_attributes(name: 'Guilherme', age: 31)
+        end
+    end
+
+    context 'Erros matchers' do
+        it 'raise_error: should not divide by zero' do
+            calc = Calculator.new
+            expect{ calc.div(2, 0) }.to raise_error(ZeroDivisionError) # test from class error
+            expect{ calc.div(2, 0) }.to raise_error("divided by 0") # test from message error
+            expect{ calc.div(2, 0) }.to raise_error(ZeroDivisionError, "divided by 0") # test from both class and message error
+            expect{ calc.div(2, 0) }.to raise_error(/divided/) # test from regex message error
         end
     end
 end
