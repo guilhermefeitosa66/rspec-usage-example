@@ -158,4 +158,58 @@ describe 'Matchers' do
             expect{ calc.div(2, 0) }.to raise_error(/divided/) # test from regex message error
         end
     end
+
+    context Array.new([1, 2, 3, 4, 5]), 'Arrays matchers' do
+        it 'include' do
+            expect(subject).to include(2)
+            expect(subject).to include(2, 3)
+        end
+
+        it 'match_array' do
+            expect(subject).not_to match_array([1, 2])
+            expect(subject).to match_array([1, 2, 3, 4, 5])
+        end
+        
+        it 'contain_exactly' do
+            expect(subject).not_to contain_exactly(1, 2)
+            expect(subject).to contain_exactly(1, 2, 3, 4, 5)
+        end
+    end
+
+    context (1..5), 'Ranges matchers' do
+        it 'cover' do
+            expect(subject).to cover(2)
+            expect(subject).to cover(2, 5)
+            expect(subject).not_to cover(0, 6)
+
+            # an alternative to expect(subject).to
+            is_expected.to cover(3)
+        end
+
+        # one line syntaxe
+        it { is_expected.to cover(2) }
+        it { is_expected.to cover(2, 5) }
+        it { is_expected.not_to cover(0, 6) }
+    end
+
+    context [1, 2, 3, 4, 5], 'Collections matchers' do
+        it { is_expected.to all(be > 0)}
+    end
+
+    context 'be_within matcher' do
+        subject { 2.5 }
+        # delta 0.5
+        # |1.5|1.6|1.7|1.8|1.9| <= (2) => |2.1|2.2|2.3|2.4|2.5|
+        it { is_expected.to be_within(0.5).of(2) }
+    end
+
+    context 'satisfy matcher' do
+        it { expect(2).to satisfy { |x| x % 2 == 0 } }
+
+        it do 
+            expect(9).to satisfy('be a multiple of 3') do |x| 
+                x % 3 == 0
+            end
+        end
+    end
 end
